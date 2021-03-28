@@ -71,7 +71,15 @@
     </style>
     
     <script>
+        var url = "http://127.0.0.1:8080/"
+        var pageContent = {}
+
+        fetch(url + "get").then((resp) => {return resp.json()}).then((content) => {
+            pageContent = content 
+        })
+
         
+
     </script>
 </head>
 <body class="outer">
@@ -106,9 +114,9 @@
                         {{ range $cost, $quest := index $.Questions $theme }}
                         <th>
                             {{ if eq $quest.Answered true}}
-                            <input type="button" value="000" class="answered">
+                            <input type="button" value="000" class="answered" id="{{ $quest.Id }}">
                             {{ else }}
-                            <input type="button" value="{{ $cost }}" onclick="confirm('{{ $quest.Text }}')" class="unanswered">
+                            <input type="button" value="{{ $cost }}" onclick="confirm('{{ $quest.Text }}')" class="unanswered" id="{{ $quest.Id }}">
                             {{ end }}
                         </th>
                         {{ end }}

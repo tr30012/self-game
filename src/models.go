@@ -6,6 +6,7 @@ type Player struct {
 }
 
 type Question struct {
+	Id       int
 	Cost     int    `json:"q_cost"`
 	Text     string `json:"q_text"`
 	Answer   string `json:"q_answer"`

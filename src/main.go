@@ -40,11 +40,14 @@ func LoadQuestions(si int, ei int) QuestionMap {
 
 	q := make(QuestionMap)
 
+	id := 0
 	for i := si; i < ei; i++ {
 		q[v[i].Text] = make(map[int]Question)
 
 		for j := 0; j < len(v[i].Questions); j++ {
+			v[i].Questions[j].Id = id
 			q[v[i].Text][v[i].Questions[j].Cost] = v[i].Questions[j]
+			id++
 		}
 	}
 

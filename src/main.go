@@ -19,7 +19,8 @@ var (
 	mainPageContent *MainPageContent
 )
 
-func LoadQuestions() QuestionMap {
+func LoadQuestions(si int, ei int) QuestionMap {
+
 	f, err := os.Open("static\\json\\questions.json")
 
 	if err != nil {
@@ -39,7 +40,7 @@ func LoadQuestions() QuestionMap {
 
 	q := make(QuestionMap)
 
-	for i := 0; i < len(v); i++ {
+	for i := si; i < ei; i++ {
 		q[v[i].Text] = make(map[int]Question)
 
 		for j := 0; j < len(v[i].Questions); j++ {
@@ -77,7 +78,7 @@ func LoadPlayers() []Player {
 
 func LoadMainPageContent() *MainPageContent {
 	return &MainPageContent{
-		Questions: LoadQuestions(),
+		Questions: LoadQuestions(0, 5),
 		Players:   LoadPlayers(),
 	}
 }

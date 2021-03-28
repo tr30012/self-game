@@ -7,11 +7,58 @@
     <title> Своя игра </title>
     
     <style>
-
-        body {
-            background-color: blueviolet;
+        #root {
+            display: flex;
+            font-size: 24px;
         }
-
+        .table_players {
+        border-collapse: collapse;
+        border-left: 3px solid #F79361;
+        border-right: 3px solid #F79361;
+        border-bottom: 3px solid #F79361;
+        font-family: "Lucida Grande", sans-serif;
+        margin: auto;
+        }
+        .table_players caption {
+        background: #F79361; 
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 2px  4px 0 rgba(0,0,0,.3);
+        color: white;
+        font-family: "Roboto Slab",serif;
+        font-style: normal;
+        font-size: 2.6em;
+        text-align: center;
+        margin: 0;
+        }
+        .table_players td, .table_players th {
+        padding: 10px;
+        }
+        .table_players th {
+        text-align: left;
+        font-size: 1.8em;
+        }
+        .table_players tr:nth-child(2n) {
+        background: #E5E5E5;
+        }
+        .table_players td:last-of-type {
+        text-align: center;
+        }
+        .table_players input, a {
+        display: inline-block;
+        padding: 5px 10px;
+        background: #F79361;
+        box-shadow: 2px 2px 0 0 #a22800;
+        position: relative;
+        font-size: 1em;
+        }
+        .table_players input:hover:not(answered) {
+        /*box-shadow: none;
+        top: 2px;
+        left: 2px;*/
+        background-color: chocolate;
+        }
     </style>
     
     <script>
@@ -19,6 +66,48 @@
     </script>
 </head>
 <body>
-    
+
+    <div id="root">
+
+        <table class="table_players">
+            <caption> ТАБЛИЦА ИГРОКОВ </caption>
+            <tr>
+                <th> ИГРОК </th>
+                <th colspan="2"> СЧЕТ </th>
+            </tr>
+
+            {{ range .Players }}
+
+            <tr>
+                <th> {{ .Name }} </th>
+                <th> {{ .Points }} </th>
+                <th>
+                    <input type="button" value="ДОБАВИТЬ/ОТНЯТЬ" onclick="alert('ЗДАРОВА')">
+                </th>
+            </tr>
+
+            {{end}}
+
+        </table>
+
+        <table class="table_players">
+            <caption> ВОПРОСЫ </caption>
+
+            {{ range $theme, $questions := $.Questions }} 
+            <tr>
+                <th>{{ $theme }}</th>
+                {{ range $cost, $quest := index $.Questions $theme }}
+                <th>
+                    {{ if eq $quest.Answered true}}
+                    <input type="button" value="000" class="answered">
+                    {{ else }}
+                    <input type="button" value="{{ $cost }}" onclick="alert('OK')" class="unanswered">
+                    {{ end }}
+                </th>
+                {{ end }}
+            </tr>
+            {{ end }}
+        </table>
+    </div>
 </body>
 </html>

@@ -52,11 +52,13 @@
         box-shadow: 2px 2px 0 0 #a22800;
         position: relative;
         font-size: 1em;
+        cursor: pointer;
         }
-        .table_players input:hover:not(answered) {
+        .table_players a {
             background-color: chocolate;
         }
-        .table_players .answered input {
+
+        .answered{
             background-color: black;
         }
 
@@ -74,11 +76,60 @@
         var url = "http://127.0.0.1:8080/"
         var pageContent = {}
 
-        fetch(url + "get").then((resp) => {return resp.json()}).then((content) => {
-            pageContent = content 
-        })
+        function UpdataPageContent() {
+            console.log('Запрос данных')
+            return fetch(url + "get").then((resp) => {return resp.json()}).then((content) => {
+                pageContent = content 
+            })
+        }
 
-        
+        function SetPageContent() {
+            fetch(url + "set", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify(pageContent)
+            })
+        }
+
+        function Answer(theme, cost) {
+            console.log("Answer")
+            let q = pageContent[theme][cost]
+
+            alert(q.Text)
+
+            pageContent[theme][cost].q_answered = true
+
+            SetPageContent()
+            
+            UpdataPageContent().then(ReloadPage())
+        }
+
+        function ReloadPage() {
+            console.log('Перезагрузка')
+            for (let t in pageContent.Questions) {
+                for (let c in pageContent.Questions[t]) {
+
+                    let q = pageContent.Questions[t][c]
+                    let el = document.getElementById(String(q.Id))
+                    
+                    if (q.q_answered)  {
+                        el.value = "БЫЛ"
+                        el.onclick = () => {}
+                    }
+                    else { 
+                        el.value = c
+                        el.onclick = () => {Answer(t, c)}
+                    }
+
+                    console.log(el.onclick)
+                }
+            }
+            console.log()
+        }
+
+        UpdataPageContent().then(ReloadPage())
 
     </script>
 </head>
@@ -113,11 +164,7 @@
                         <th>{{ $theme }}</th>
                         {{ range $cost, $quest := index $.Questions $theme }}
                         <th>
-                            {{ if eq $quest.Answered true}}
-                            <input type="button" value="000" class="answered" id="{{ $quest.Id }}">
-                            {{ else }}
-                            <input type="button" value="{{ $cost }}" onclick="confirm('{{ $quest.Text }}')" class="unanswered" id="{{ $quest.Id }}">
-                            {{ end }}
+                            <a id="{{ $quest.Id }}"> {{ $quest.Cost }} </a>
                         </th>
                         {{ end }}
                     </tr>

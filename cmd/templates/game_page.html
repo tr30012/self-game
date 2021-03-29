@@ -1,137 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="ru-RU">
+
 <head>
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title> Своя игра </title>
-    
-    <style>
-        #root {
-            font-size: 24px;
-            margin: auto;
-        }
-        .table_players {
-        border-collapse: collapse;
-        border-left: 3px solid #F79361;
-        border-right: 3px solid #F79361;
-        border-bottom: 3px solid #F79361;
-        font-family: "Lucida Grande", sans-serif;
-        margin: auto;
-        }
-        .table_players caption {
-        background: #F79361; 
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 2px  4px 0 rgba(0,0,0,.3);
-        color: white;
-        font-family: "Roboto Slab",serif;
-        font-style: normal;
-        font-size: 2em;
-        text-align: center;
-        margin: 0;
-        }
-        .table_players td, .table_players th {
-        padding: 10px;
-        }
-        .table_players th {
-        text-align: left;
-        font-size: 1.8em;
-        }
-        .table_players tr:nth-child(2n) {
-        background: #E5E5E5;
-        }
-        .table_players td:last-of-type {
-        text-align: center;
-        }
-        .table_players input, a {
-        display: inline-block;
-        padding: 5px 10px;
-        background: #F79361;
-        box-shadow: 2px 2px 0 0 #a22800;
-        position: relative;
-        font-size: 1em;
-        cursor: pointer;
-        }
-        .table_players a {
-            background-color: chocolate;
-        }
 
-        .answered{
-            background-color: black;
-        }
-
-        .outer {
-            padding-top: 10%;
-            position: relative;
-        }
-
-        .inner {
-            top: 50%;
-        }
-    </style>
-    
-    <script>
-        var url = "http://127.0.0.1:8080/"
-        var pageContent = {}
-
-        function UpdataPageContent() {
-            console.log('Запрос данных')
-            return fetch(url + "get").then((resp) => {return resp.json()}).then((content) => {
-                pageContent = content 
-            })
-        }
-
-        function SetPageContent() {
-            fetch(url + "set", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json" 
-                },
-                body: JSON.stringify(pageContent)
-            })
-        }
-
-        function Answer(theme, cost) {
-            console.log("Answer")
-            let q = pageContent[theme][cost]
-
-            alert(q.Text)
-
-            pageContent[theme][cost].q_answered = true
-
-            SetPageContent()
-            
-            UpdataPageContent().then(ReloadPage())
-        }
-
-        function ReloadPage() {
-            console.log('Перезагрузка')
-            for (let t in pageContent.Questions) {
-                for (let c in pageContent.Questions[t]) {
-
-                    let q = pageContent.Questions[t][c]
-                    let el = document.getElementById(String(q.Id))
-                    
-                    if (q.q_answered)  {
-                        el.value = "БЫЛ"
-                        el.onclick = () => {}
-                    }
-                    else { 
-                        el.value = c
-                        el.onclick = () => {Answer(t, c)}
-                    }
-
-                    console.log(el.onclick)
-                }
-            }
-            console.log()
-        }
-
-        UpdataPageContent().then(ReloadPage())
-
-    </script>
+    <link rel="stylesheet" href="../static/css/game_page.css">
 </head>
 <body class="outer">
 
@@ -143,12 +22,10 @@
                     {{ range .Players }}
 
                     <tr>
-                        <th> {{ .Name }} </th>
-                        <th> {{ .Points }} </th>
-                        <th>
-                            <input type="button" value="+" onclick="prompt('ПРИБАВИТЬ: ')">
-                            <input type="button" value="-" onclick="prompt('ОТНЯТЬ: ')">
-                        </th>
+                        <td> {{ .Name }} </td>
+                        <td id="player{{ .Id }}"> {{ .Points }} </td>
+                        <td><a href="javascript:AddPlayerPoints({{ .Id }})">Прибавить</a></td>
+                        <td><a href="javascript:RemovePlayerPoints({{ .Id }})">Отнять</a></td>
                     </tr>
 
                     {{end}}
@@ -164,7 +41,11 @@
                         <th>{{ $theme }}</th>
                         {{ range $cost, $quest := index $.Questions $theme }}
                         <th>
-                            <a id="{{ $quest.Id }}"> {{ $quest.Cost }} </a>
+                            {{ if eq $quest.Answered true }}
+                            <a id="{{ $quest.Id }}" href="javascript:Nothing" class="answered"> БЫЛ </a>
+                            {{ else }}
+                            <a id="{{ $quest.Id }}" href="javascript:AnswerQuestion({{ $quest.Id }})"> {{ $quest.Cost }} </a>
+                            {{ end }}
                         </th>
                         {{ end }}
                     </tr>
@@ -175,4 +56,5 @@
     </table>
     
 </body>
+<script src="../static/js/game_page.js"></script>
 </html>

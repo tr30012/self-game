@@ -1,6 +1,7 @@
 package main
 
 type Player struct {
+	Id     int
 	Name   string `json:"p_name"`
 	Points int    `json:"p_points"`
 }

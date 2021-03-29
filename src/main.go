@@ -46,6 +46,7 @@ func LoadQuestions(si int, ei int) QuestionMap {
 
 		for j := 0; j < len(v[i].Questions); j++ {
 			v[i].Questions[j].Id = id
+			v[i].Questions[j].Answered = false
 			q[v[i].Text][v[i].Questions[j].Cost] = v[i].Questions[j]
 			id++
 		}
@@ -72,6 +73,10 @@ func LoadPlayers() []Player {
 	var v []Player
 	json.Unmarshal(fContent, &v)
 
+	for i := 0; i < len(v); i++ {
+		v[i].Id = i
+	}
+
 	defer f.Close()
 
 	logger.Info("Успешно загружены игроки.")
@@ -96,6 +101,9 @@ func main() {
 	router.HandleFunc("/get", getPageContent).Methods("GET")
 	router.HandleFunc("/set", setPageContent).Methods("POST")
 	router.HandleFunc("/restart", restartPageContent).Methods("GET")
+
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
+		http.FileServer(http.Dir("./static/"))))
 
 	mainPageContent = LoadMainPageContent()
 

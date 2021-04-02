@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 
 	"github.com/gorilla/mux"
 )
@@ -18,6 +20,23 @@ var (
 	router          *mux.Router
 	mainPageContent *MainPageContent
 )
+
+func open(url string) error {
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		cmd = "xdg-open"
+	}
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
+}
 
 func LoadQuestions(si int, ei int) QuestionMap {
 
@@ -106,6 +125,8 @@ func main() {
 		http.FileServer(http.Dir("./static/"))))
 
 	mainPageContent = LoadMainPageContent()
+
+	go open("http://" + webAddress)
 
 	if err := http.ListenAndServe(webAddress, router); err != nil {
 		panic(err)

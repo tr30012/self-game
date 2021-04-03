@@ -13,7 +13,9 @@ type APIServerConfig struct {
 }
 
 type StorageConfig struct {
-	DBPath string `json:"dbpath"`
+	DBPath     string `json:"dbpath"`
+	QIterStart int    `json:"qiterstart"`
+	QIterEnd   int    `json:"qiterend"`
 }
 
 type Config struct {

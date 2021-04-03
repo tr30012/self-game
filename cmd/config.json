@@ -5,6 +5,8 @@
         "staticpath": "./static/"
     },
     "storage" : {
-        "dbpath": "./gosql.db"
+        "dbpath": "./gosql.db",
+        "qiterstart": 0,
+        "qiterend": 5
     }
 }

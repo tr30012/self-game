@@ -5,6 +5,6 @@
         "staticpath": "./static/"
     },
     "storage" : {
-        "dbpath": "./questions.db"
+        "dbpath": "./gosql.db"
     }
 }

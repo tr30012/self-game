@@ -1,4 +1,4 @@
-var url = "http://127.0.0.1:8080/"
+var url = "http://127.0.0.1:8081/"
 var pageContent = {}
 
 function UpdataPageContent() {
@@ -50,9 +50,9 @@ function AnswerQuestion(id) {
             let question = theme[p]
 
             if (question.Id == id) {
-                if (confirm(question.q_text)) {
-                    pageContent.Questions[t][p].q_answered = true
-                }
+                $("#popup-text").text(question.q_text)
+                pageContent.Questions[t][p].q_answered = true
+                $("#popup").show()
             }
         }
     }
@@ -85,6 +85,14 @@ function ReloadPage() {
             }
         }
     }
+}
+
+function PopupOk() {
+    $("#popup").hide()
+}
+
+function PopupCancel() {
+    $("#popup").hide()
 }
 
 UpdataPageContent().then(ReloadPage())
